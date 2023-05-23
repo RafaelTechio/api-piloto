@@ -10,6 +10,7 @@ module.exports = class MongoConnection extends Connection {
 
     async connect() {
         try {
+            console.log(`Starting connection with mongo...`);
             const mongoUrl = `mongodb+srv://${this.user}:${this.pass}@${this.ip}/${this.database}?retryWrites=true&w=majority`;
 
             mongoose.set('strictQuery', true);
