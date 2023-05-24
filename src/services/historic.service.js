@@ -6,13 +6,13 @@ module.exports = class HistoricService extends Service {
         super(repository);
     }
 
-    async create(esp_id, mantainer_id, date, sector, at_station) {
-        if (!esp_id) {
-            throw new InternalServerError('Historic must have a esp_id');
+    async create(espId, mantainerId, date, sector, atStation) {
+        if (!espId) {
+            throw new InternalServerError('Historic must have a espId');
         }
 
-        if (!mantainer_id) {
-            throw new InternalServerError('Historic must have a mantainer_id');
+        if (!mantainerId) {
+            throw new InternalServerError('Historic must have a mantainerId');
         }
 
         if (!date) {
@@ -23,16 +23,16 @@ module.exports = class HistoricService extends Service {
             throw new InternalServerError('Historic must have a sector');
         }
 
-        if (!at_station) {
-            throw new InternalServerError('Historic have at_station declaration');
+        if (!atStation) {
+            throw new InternalServerError('Historic have atStation declaration');
         }
 
         return await this.repository.create({
-            esp_id,
-            mantainer_id,
+            espId,
+            mantainerId,
             date,
             sector,
-            at_station,
+            atStation,
         });
     }
 };
