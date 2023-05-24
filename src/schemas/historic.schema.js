@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const HistoricSchema = new mongoose.Schema({
-    esp_id: String,
-    mantainer_id: String,
+    espId: String,
+    mantainerId: String,
     date: Date,
     sector: String,
-    at_station: Boolean,
+    atStation: Boolean,
 });
 
 module.exports = HistoricSchema;
