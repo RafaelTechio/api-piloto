@@ -11,6 +11,6 @@ const router = Router();
 router.use('/mainteiners/', MainteinerRouter);
 router.use('/esps/', EspRouter);
 router.use('/esp-routers/', EspRouterRouter);
-router.use('/sector/', SectorRouter);
+router.use('/sectors/', SectorRouter);
 
 module.exports = router;
