@@ -5,6 +5,7 @@ const MainteinerRouter = require('./mainteiner.router');
 const EspRouter = require('./esp.router');
 const EspRouterRouter = require('./esp-router.router');
 const SectorRouter = require('./sector.router');
+const HistoricRouter = require('./historic.router');
 
 const router = Router();
 
@@ -12,5 +13,7 @@ router.use('/mainteiners/', MainteinerRouter);
 router.use('/esps/', EspRouter);
 router.use('/esp-routers/', EspRouterRouter);
 router.use('/sectors/', SectorRouter);
+router.use('/historics/', HistoricRouter);
+
 
 module.exports = router;
