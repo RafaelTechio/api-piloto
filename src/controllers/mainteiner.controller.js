@@ -22,7 +22,8 @@ module.exports = class MainteinerController extends Controller {
         Controller.validationResult(req);
         const { name, rfid, sector } = Controller.matchData(req);
 
-        const maintainerService = await mainteinerServiceProvider();
+        const maintainerService = mainteinerServiceProvider();
+
         const maintainer = await maintainerService.create(name, rfid, sector);
 
         res.json(maintainer);
