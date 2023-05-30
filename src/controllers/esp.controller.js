@@ -22,7 +22,7 @@ module.exports = class EspController extends Controller {
         Controller.validationResult(req);
         const { mac } = Controller.matchData(req);
 
-        const espService = await espServiceProvider();
+        const espService = espServiceProvider();
         const esp = await espService.create(mac);
 
         res.json(esp);

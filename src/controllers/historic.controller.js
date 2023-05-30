@@ -20,10 +20,10 @@ module.exports = class HistoricController extends Controller {
 
     static async create(req, res) {
         Controller.validationResult(req);
-        const { espId, mantainerId, date, sector, atStation } = Controller.matchData(req);
+        const { espId, mantainerId, sectorId, atStation } = Controller.matchData(req);
 
-        const historicService = await historicServiceProvider();
-        const historic = await historicService.create(espId, mantainerId, date, sector, atStation);
+        const historicService = historicServiceProvider();
+        const historic = await historicService.create(espId, mantainerId, sectorId, atStation);
 
         res.json(historic);
     }
