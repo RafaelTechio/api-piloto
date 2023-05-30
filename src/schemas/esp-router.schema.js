@@ -1,15 +1,14 @@
 const mongoose = require('mongoose');
 
-const MaintenerSchema = new mongoose.Schema(
+const EspRouterSchema = new mongoose.Schema(
     {
-        name: {
+        sectorId: String,
+        mac: {
             type: String,
             required: true,
         },
-        rfid: String,
-        sectorId: String,
     },
     { timestamps: true, versionKey: false }
 );
 
-module.exports = MaintenerSchema;
+module.exports = EspRouterSchema;

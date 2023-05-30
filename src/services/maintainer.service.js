@@ -1,11 +1,12 @@
 const Service = require('./service');
+const InternalServerError = require('../errors/internal-server-error');
 
 module.exports = class MaintenerService extends Service {
     constructor(repository) {
         super(repository);
     }
 
-    async create(name, rfid, sector) {
+    async create(name, rfid, sectorId) {
         if (!name) {
             throw new InternalServerError('Maintener must have a name');
         }
@@ -14,14 +15,14 @@ module.exports = class MaintenerService extends Service {
             throw new InternalServerError('Maintener must have a rfid');
         }
 
-        if (!sector) {
+        if (!sectorId) {
             throw new InternalServerError('Maintener must have a sector');
         }
 
         return await this.repository.create({
             name,
             rfid,
-            sector,
+            sectorId,
         });
     }
 };
