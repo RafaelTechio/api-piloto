@@ -1,3 +1,3 @@
 const validator = require('express-validator');
 
-module.exports = [validator.body([`espId`, `mantainerId`, `date`, `sector`, `atStation`]).notEmpty().escape()];
+module.exports = [validator.body([`espId`, `mantainerId`, `sectorId`]).notEmpty().escape(), validator.body(`atStation`)];
