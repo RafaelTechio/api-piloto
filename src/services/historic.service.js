@@ -1,4 +1,7 @@
 const InternalServerError = require('../errors/internal-server-error');
+const espRouterMongoRepository = require('../repositories/esp-router.repository');
+const maintainerMongoRepository = require('../repositories/maintainer.repository');
+const sectorMongoRepository = require('../repositories/sector.repository');
 const Service = require('./service');
 
 module.exports = class HistoricService extends Service {
@@ -6,23 +9,26 @@ module.exports = class HistoricService extends Service {
         super(repository);
     }
 
-    async create(espId, mantainerId, sectorId, routerId, wifiPotency, atStation) {
+    async create(espId, maintainerId, routerId, wifiPotency = null, atStation = false) {
         if (!espId) {
             throw new InternalServerError('Historic must have a espId');
         }
 
-        if (!mantainerId) {
-            throw new InternalServerError('Historic must have a mantainerId');
+        if (!maintainerId) {
+            throw new InternalServerError('Historic must have a maintainerId');
         }
 
-        if (!sectorId) {
-            throw new InternalServerError('Historic must have a sector');
-        }
+        const maintainer = await maintainerMongoRepository.findById(maintainerId);
+        const sectorMaintainer = await sectorMongoRepository.findById(maintainer.sectorId);
+
+        const router = await espRouterMongoRepository.findById(routerId);
+        const sectorRouterId = await sectorMongoRepository.findById(router.sectorId);
 
         return await this.repository.create({
             espId,
-            mantainerId,
-            sectorId,
+            sectorEspId: sectorRouterId,
+            maintainerId,
+            sectorMaintainerId: sectorMaintainer.id,
             routerId,
             wifiPotency,
             atStation,

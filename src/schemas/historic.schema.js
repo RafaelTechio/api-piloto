@@ -6,8 +6,9 @@ const HistoricSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        mantainerId: String,
-        sectorId: String,
+        sectorEspId: String,
+        maintainerId: String,
+        sectorMaintainerId: String,
         routerId: String,
         wifiPontency: Number,
         atStation: {
