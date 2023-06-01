@@ -13,7 +13,7 @@ module.exports = async function startGlobalConnections() {
     }
 
     if (environmentVars.MQTT_BROKER_URL) {
-        const mongoConnection = new MqttConnection(environmentVars.MQTT_BROKER_URL);
+        const mongoConnection = new MqttConnection(environmentVars.MQTT_BROKER_URL, environmentVars.MQTT_BROKER_IP, environmentVars.MQTT_BROKER_BASE_TOPIC);
         mongoConnection.connect();
 
         if (mongoConnection.connected) {

@@ -3,7 +3,7 @@ const Connection = require('./connection');
 const environmentVars = require('../config/environment.config');
 
 module.exports = class MqttConnection extends Connection {
-    constructor(url = environmentVars.MQTT_BROKER_URL, ip = environmentVars.MQTT_BROKER_PORT, baseTopic = '') {
+    constructor(url = environmentVars.MQTT_BROKER_URL, ip = environmentVars.MQTT_BROKER_PORT, baseTopic = environmentVars.MQTT_BROKER_BASE_TOPIC) {
         super(null, null, url, ip);
         this.baseTopic = baseTopic;
     }
@@ -22,22 +22,26 @@ module.exports = class MqttConnection extends Connection {
         }
     }
 
+    getCompleteTopic(topic) {
+        return `${this.baseTopic}${topic}`;
+    }
+
     subscribe(
         topic,
         callback = () => {
-            console.log(`Subscribed at ${topic} topic`);
+            console.log(`Subscribed at ${new Date().toISOString()} on ${this.getCompleteTopic(topic)} topic`);
         }
     ) {
-        this.client.subscribe(`${this.baseTopic}${topic}`, callback);
+        this.client.subscribe(this.getCompleteTopic(topic), callback);
     }
 
     unsubscribe(
         topic,
         callback = () => {
-            console.log(`Unsubscribed of ${topic} topic`);
+            console.log(`Unsubscribed ata ${new Date().toISOString()} of ${this.getCompleteTopic(topic)} topic`);
         }
     ) {
-        this.client.unsubscribe(`${this.baseTopic}${topic}`, callback);
+        this.client.unsubscribe(this.getCompleteTopic(topic), callback);
     }
 
     publish(
@@ -45,16 +49,16 @@ module.exports = class MqttConnection extends Connection {
         message,
         options,
         callbackError = (error) => {
-            console.log(`Error trying to publish to (${topic}): `, error);
+            console.log(`Error trying to publish at ${new Date().toISOString()} to (${this.getCompleteTopic(topic)}): `, error);
             throw error;
         }
     ) {
-        this.client.publish(`${this.baseTopic}${topic}`, message, options, callbackError);
+        this.client.publish(this.getCompleteTopic(topic), message, options, callbackError);
     }
 
     listenConnect(
         callback = () => {
-            console.log(`Connected`);
+            console.log(`Connected at ${new Date().toISOString()}`);
         }
     ) {
         this.client.on('connect', callback);
@@ -62,45 +66,81 @@ module.exports = class MqttConnection extends Connection {
 
     listenMessage(
         callback = (topic, payload) => {
-            console.log(`Received message of (${topic}) topic:`, payload);
+            console.log(`Received message at ${new Date().toISOString()} of (${this.getCompleteTopic(topic)}) topic:`, payload);
         }
     ) {
         this.client.on('message', callback);
     }
 
-    listenError(callback) {
+    listenError(
+        callback = (error) => {
+            console.log(`Receive an error at ${new Date().toISOString()}.`, error);
+        }
+    ) {
         this.client.on('error', callback);
     }
 
-    listenDisconnect(callback) {
+    listenDisconnect(
+        callback = (packet) => {
+            console.log(`Disconnected at ${new Date().toISOString()}`, packet);
+        }
+    ) {
         this.client.on('disconnect', callback);
     }
 
-    listenEnd(callback) {
+    listenEnd(
+        callback = () => {
+            console.log(`Received end at ${new Date().toISOString()}`);
+        }
+    ) {
         this.client.on('end', callback);
     }
 
-    listenClose(callback) {
+    listenClose(
+        callback = () => {
+            console.log(`Received close at ${new Date().toISOString()}`);
+        }
+    ) {
         this.client.on('close', callback);
     }
 
-    listenOffline(callback) {
+    listenOffline(
+        callback = () => {
+            console.log(`Received offline at ${new Date().toISOString()}`);
+        }
+    ) {
         this.client.on('offline', callback);
     }
 
-    listenOutgoingEmpty(callback) {
+    listenOutgoingEmpty(
+        callback = () => {
+            console.log(`Received outgoing at ${new Date().toISOString()}`);
+        }
+    ) {
         this.client.on('outgoingEmpty', callback);
     }
 
-    listenPacketreceive(callback) {
+    listenPacketreceive(
+        callback = (packet) => {
+            console.log(`Received Packet at ${new Date().toISOString()}`, packet);
+        }
+    ) {
         this.client.on('packetreceive', callback);
     }
 
-    listenPacketsend(callback) {
+    listenPacketsend(
+        callback = (packet) => {
+            console.log(`Sent Packet at ${new Date().toISOString()}`, packet);
+        }
+    ) {
         this.client.on('packetsend', callback);
     }
 
-    listenReconnect(callback) {
+    listenReconnect(
+        callback = () => {
+            console.log(`Received reconnect at ${new Date().toISOString()}`);
+        }
+    ) {
         this.client.on('reconnect', callback);
     }
 };

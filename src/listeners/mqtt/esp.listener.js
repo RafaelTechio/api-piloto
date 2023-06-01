@@ -1,15 +1,12 @@
 const MqttConnection = require('../../connections/mqtt.connection');
-
-module.exports = function espListener(mqttConnection = new MqttConnection()) {
-    const esps = [{ mac: '42342' }];
+const espServiceProvider = require('../../providers/esp.provider');
+module.exports = async function espListener(mqttConnection = new MqttConnection()) {
+    const espService = espServiceProvider();
+    const esps = await espService.list();
 
     mqttConnection.listenConnect(() => {
-        esps.map((esp) => {
-            mqttConnection.subscribe(`/esp/${esp.mac}`);
-        });
+        mqttConnection.subscribe(`/+`);
     });
 
-    esps.map((esp) => {
-        mqttConnection.listenMessage((topic, payload) => {});
-    });
+    mqttConnection.listenMessage();
 };
