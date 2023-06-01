@@ -8,6 +8,8 @@ const HistoricSchema = new mongoose.Schema(
         },
         mantainerId: String,
         sectorId: String,
+        routerId: String,
+        wifiPontency: Number,
         atStation: {
             type: Boolean,
             default: false,
