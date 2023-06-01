@@ -1,7 +1,7 @@
 const { Router } = require('express');
-const MainteinerController = require('../controllers/mainteiner.controller');
-const createMainteinerValidation = require('../validations/mainteiner/create-mainteiner.validation');
-const updateMainteinerValidation = require('../validations/mainteiner/update-mainteiner.validation');
+const MainteinerController = require('../controllers/maintainer.controller');
+const createMainteinerValidation = require('../validations/mainteiner/create-maintainer.validation');
+const updateMainteinerValidation = require('../validations/mainteiner/update-maintainer.validation');
 
 const router = Router();
 

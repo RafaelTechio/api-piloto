@@ -1,15 +1,18 @@
 const mongoose = require('mongoose');
 
-const MaintenerSchema = new mongoose.Schema(
+const maintainerSchema = new mongoose.Schema(
     {
         name: {
             type: String,
             required: true,
         },
-        rfid: String,
+        rfid: {
+            type: String,
+            unique: true,
+        },
         sectorId: String,
     },
     { timestamps: true, versionKey: false }
 );
 
-module.exports = MaintenerSchema;
+module.exports = maintainerSchema;

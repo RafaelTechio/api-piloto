@@ -1,5 +1,5 @@
 const Controller = require('./controller');
-const mainteinerServiceProvider = require('../providers/mainteiner.provider');
+const mainteinerServiceProvider = require('../providers/maintainer.provider');
 
 module.exports = class MainteinerController extends Controller {
     static async list(req, res) {
@@ -22,9 +22,9 @@ module.exports = class MainteinerController extends Controller {
         Controller.validationResult(req);
         const { name, rfid, sectorId } = Controller.matchData(req);
 
-        const maintainerService = mainteinerServiceProvider();
+        const MaintainerService = mainteinerServiceProvider();
 
-        const maintainer = await maintainerService.create(name, rfid, sectorId);
+        const maintainer = await MaintainerService.create(name, rfid, sectorId);
 
         res.json(maintainer);
     }
