@@ -2,16 +2,24 @@ const MongoConnection = require('../connections/mongo.connection');
 const MqttConnection = require('../connections/mqtt.connection');
 const listener = require('../listeners/mqtt/listener');
 const environmentVars = require('./environment.config');
+const globalConnections = require('./global-connections.config');
 
-module.exports = function startGlobalConnections() {
+module.exports = async function startGlobalConnections() {
     if (environmentVars.MONGO_DB_USER && environmentVars.MONGO_DB_PASS && environmentVars.MONGO_DB_ADDRESS && environmentVars.MONGO_DB_DATABASE) {
         const mongoConnection = new MongoConnection(environmentVars.MONGO_DB_USER, environmentVars.MONGO_DB_PASS, environmentVars.MONGO_DB_ADDRESS, environmentVars.MONGO_DB_DATABASE);
-        mongoConnection.connect();
+        await mongoConnection.connect();
+
+        globalConnections.mongoConnection = mongoConnection;
     }
 
     if (environmentVars.MQTT_BROKER_URL) {
-        const mqttConnection = new MqttConnection(environmentVars.MQTT_BROKER_URL);
-        mqttConnection.connect();
-        listener(mqttConnection);
+        const mongoConnection = new MqttConnection(environmentVars.MQTT_BROKER_URL);
+        mongoConnection.connect();
+
+        if (mongoConnection.connected) {
+            listener(mongoConnection);
+        }
+
+        globalConnections.mongoConnection = mongoConnection;
     }
 };

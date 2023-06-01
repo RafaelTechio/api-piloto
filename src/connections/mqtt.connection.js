@@ -3,17 +3,22 @@ const Connection = require('./connection');
 const environmentVars = require('../config/environment.config');
 
 module.exports = class MqttConnection extends Connection {
-    constructor(url = environmentVars.MQTT_BROKER_URL) {
-        super(null, null, url, null);
+    constructor(url = environmentVars.MQTT_BROKER_URL, ip = environmentVars.MQTT_BROKER_PORT, baseTopic = '') {
+        super(null, null, url, ip);
+        this.baseTopic = baseTopic;
     }
 
     connect() {
-        console.log(`Starting connection with broker ${this.ip}...`);
-        this.client = mqtt.connect(this.ip);
-        this.connected = this.client.connected;
+        try {
+            console.log(`Starting connection with broker ${this.ip}...`);
+            const connectionUrl = `mqtt://${this.ip}:${this.port}`;
+            this.client = mqtt.connect(connectionUrl);
 
-        if (this.connected) {
-            console.log(`Connected at (${this.ip}) broker`);
+            this.connected = true;
+            console.log(`MQTT connected at ${connectionUrl} broker`);
+        } catch (error) {
+            console.log(`Error trying to connect with MQTT in (${this.ip}) server. Error: `, error);
+            this.error = error;
         }
     }
 
@@ -23,7 +28,7 @@ module.exports = class MqttConnection extends Connection {
             console.log(`Subscribed at ${topic} topic`);
         }
     ) {
-        this.client.subscribe(topic, callback);
+        this.client.subscribe(`${this.baseTopic}${topic}`, callback);
     }
 
     unsubscribe(
@@ -32,7 +37,7 @@ module.exports = class MqttConnection extends Connection {
             console.log(`Unsubscribed of ${topic} topic`);
         }
     ) {
-        this.client.unsubscribe(topic, callback);
+        this.client.unsubscribe(`${this.baseTopic}${topic}`, callback);
     }
 
     publish(
@@ -44,10 +49,14 @@ module.exports = class MqttConnection extends Connection {
             throw error;
         }
     ) {
-        this.client.publish(topic, message, options, callbackError);
+        this.client.publish(`${this.baseTopic}${topic}`, message, options, callbackError);
     }
 
-    listenConnect(callback) {
+    listenConnect(
+        callback = () => {
+            console.log(`Connected`);
+        }
+    ) {
         this.client.on('connect', callback);
     }
 

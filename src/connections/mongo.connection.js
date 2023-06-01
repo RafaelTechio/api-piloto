@@ -5,7 +5,8 @@ const environmentVars = require('../config/environment.config');
 
 module.exports = class MongoConnection extends Connection {
     constructor(user = environmentVars.MONGO_DB_USER, pass = environmentVars.MONGO_DB_PASS, ip = environmentVars.MONGO_DB_ADDRESS, database = environmentVars.MONGO_DB_DATABASE) {
-        super(user, pass, ip, database);
+        super(user, pass, ip, null);
+        this.database = database;
     }
 
     async connect() {
@@ -19,8 +20,8 @@ module.exports = class MongoConnection extends Connection {
 
             console.log(`Mongo connected at ${this.database} database`);
         } catch (error) {
-            console.log('Error: ', error);
-            this.connected = false;
+            console.log('Error trying to connect with mongoDB: ', error);
+            this.error = error;
         }
     }
 };
