@@ -42,4 +42,12 @@ module.exports = async function espListener(mqttConnection = new MqttConnection(
             console.log(error);
         }
     });
+
+    mqttConnection.listenClose();
+    mqttConnection.listenDisconnect();
+    mqttConnection.listenEnd();
+    mqttConnection.listenError();
+    mqttConnection.listenOffline();
+    mqttConnection.listenOutgoingEmpty();
+    mqttConnection.listenReconnect();
 };
