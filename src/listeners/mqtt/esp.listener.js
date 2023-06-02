@@ -1,13 +1,13 @@
 const MqttConnection = require('../../connections/mqtt.connection');
 const MqttMessageHelper = require('../../helpers/mqtt-message.helper');
 const espServiceProvider = require('../../providers/esp.provider');
-const mainteinerServiceProvider = require('../../providers/maintainer.provider');
+const maintainerServiceProvider = require('../../providers/maintainer.provider');
 const espRouterServiceProvider = require('../../providers/esp-router.provider');
 const historicServiceProvider = require('../../providers/historic.provider');
 
 module.exports = async function espListener(mqttConnection = new MqttConnection()) {
     const espService = espServiceProvider();
-    const mainteinerService = mainteinerServiceProvider();
+    const maintainerService = maintainerServiceProvider();
     const espRouterService = espRouterServiceProvider();
     const historicService = historicServiceProvider();
 
@@ -19,24 +19,27 @@ module.exports = async function espListener(mqttConnection = new MqttConnection(
         try {
             const topicMac = topic.split('/').pop();
             const decodedMessage = MqttMessageHelper.decodeMessage(message);
+            console.log(`Message arrived from ${topicMac}`);
 
             let esp = await espService.findByMac(topicMac);
             if (!esp) {
+                console.log(`Created empty esp`);
                 esp = await espService.create(topicMac);
             }
 
             let espRouter = await espRouterService.findByMac(decodedMessage.BSSID);
             if (!espRouter) {
+                console.log(`Created empty router`);
                 espRouter = await espRouterService.create(null, decodedMessage.BSSID);
             }
 
             if (decodedMessage.RFID) {
-                let mainteiner = await mainteinerService.findByRfid(decodedMessage.RFID);
-                if (!mainteiner) {
-                    mainteiner = await mainteinerService.create(null, decodedMessage.RFID, null);
+                let maintainer = await maintainerService.findByRfid(decodedMessage.RFID);
+                if (!maintainer) {
+                    console.log(`Created empty maintainer`);
+                    maintainer = await maintainerService.create(null, decodedMessage.RFID, null);
                 }
-
-                await historicService.create(esp.id, mainteiner.id, espRouter.id, decodedMessage.RSSI);
+                await historicService.create(esp.id, maintainer.id, espRouter.id, decodedMessage.RSSI);
             }
         } catch (error) {
             console.log(error);
