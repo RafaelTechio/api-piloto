@@ -16,7 +16,11 @@ module.exports = class EspService extends Service {
         });
     }
 
-    findByMac(mac) {
-        return this.repository.find({ mac });
+    async findById(id) {
+        return await this.findById(id);
+    }
+
+    async findByMac(mac) {
+        return await this.find({ mac });
     }
 };

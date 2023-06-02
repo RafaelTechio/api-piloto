@@ -1,7 +1,7 @@
-const notificationServiceProvider = require("../providers/notification.provider");
-const Controller = require("./controller");
+const notificationServiceProvider = require('../providers/notification.provider');
+const Controller = require('./controller');
 
-module.exports = class NotificationController extends Controller{
+module.exports = class NotificationController extends Controller {
     static async list(req, res) {
         const notificationService = notificationServiceProvider();
 
@@ -10,7 +10,7 @@ module.exports = class NotificationController extends Controller{
         res.json(notificationList);
     }
 
-    static async find(req,res) {
+    static async find(req, res) {
         const notificationService = notificationServiceProvider();
 
         const notification = await notificationService.findById(req.params.id);
@@ -18,16 +18,18 @@ module.exports = class NotificationController extends Controller{
         res.json(notification);
     }
 
-    static async create(req,res){
+    static async create(req, res) {
         Controller.validationResult(req);
-        const{espId, manteinerId,state,urgency,sector,content} = Controller.matchData(req);
+        const { espId, manteinerId, state, urgency, sector, content } = Controller.matchData(req);
+
         const notificationService = await notificationServiceProvider();
-        const notification = await notificationService.create(espId, manteinerId,state,urgency,sector,content);
+        const { _id } = await notificationService.create(espId, manteinerId, state, urgency, sector, content);
+        const notification = await notificationService.findById(_id);
 
         res.json(notification);
     }
 
-    static async update(req,res) {
+    static async update(req, res) {
         const body = Controller.matchData(req);
 
         const notificationService = notificationServiceProvider();
@@ -41,11 +43,10 @@ module.exports = class NotificationController extends Controller{
         res.json(notification);
     }
 
-    static async delete(req,res){
+    static async delete(req, res) {
         const notificationService = notificationServiceProvider();
         const notification = await notificationService.delete(req.params.id);
 
         res.json(notification);
     }
 };
-

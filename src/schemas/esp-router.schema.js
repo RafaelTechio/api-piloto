@@ -2,9 +2,14 @@ const mongoose = require('mongoose');
 
 const EspRouterSchema = new mongoose.Schema(
     {
-        sectorId: String,
+        sector: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Sector',
+            default: null,
+        },
         mac: {
             type: String,
+            unique: true,
             required: true,
         },
     },

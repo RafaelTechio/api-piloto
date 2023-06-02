@@ -23,7 +23,8 @@ module.exports = class SectorController extends Controller {
         const { name } = Controller.matchData(req);
 
         const sectorService = await sectorServiceProvider();
-        const sector = await sectorService.create(name);
+        const { _id } = await sectorService.create(name);
+        const sector = await sectorService.findById(_id);
 
         res.json(sector);
     }

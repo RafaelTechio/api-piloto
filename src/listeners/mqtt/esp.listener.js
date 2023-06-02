@@ -2,7 +2,6 @@ const MqttConnection = require('../../connections/mqtt.connection');
 const MqttMessageHelper = require('../../helpers/mqtt-message.helper');
 const espServiceProvider = require('../../providers/esp.provider');
 const mainteinerServiceProvider = require('../../providers/maintainer.provider');
-const sectorServiceProvider = require('../../providers/sector.provider');
 const espRouterServiceProvider = require('../../providers/esp-router.provider');
 const historicServiceProvider = require('../../providers/historic.provider');
 
@@ -10,7 +9,6 @@ module.exports = async function espListener(mqttConnection = new MqttConnection(
     const espService = espServiceProvider();
     const mainteinerService = mainteinerServiceProvider();
     const espRouterService = espRouterServiceProvider();
-    const sectorService = sectorServiceProvider();
     const historicService = historicServiceProvider();
 
     mqttConnection.listenConnect(() => {
@@ -21,27 +19,24 @@ module.exports = async function espListener(mqttConnection = new MqttConnection(
         try {
             const topicMac = topic.split('/').pop();
             const decodedMessage = MqttMessageHelper.decodeMessage(message);
-            console.log(decodedMessage);
 
-            const esp = await espService.findByMac(topicMac);
+            let esp = await espService.findByMac(topicMac);
+            if (!esp) {
+                esp = await espService.create(topicMac);
+            }
+
+            let espRouter = await espRouterService.findByMac(decodedMessage.BSSID);
+            if (!espRouter) {
+                espRouter = await espRouterService.create(null, decodedMessage.BSSID);
+            }
 
             if (decodedMessage.RFID) {
-                const mainteiner = await mainteinerService.findByRfid(decodedMessage.RFID);
-
-                if (mainteiner) {
-                    console.log('BSSID', decodedMessage.BSSID);
-                    const espRouter = await espRouterService.findByMac(decodedMessage.BSSID);
-                    if (espRouter) {
-                        await historicService.create(esp.id, mainteiner.id, espRouter.id, decodedMessage.RSSI);
-                    } else {
-                        console.log('Não tem router');
-                    }
-                } else {
-                    console.log('Não tem Manutentor', decodedMessage.RFID);
+                let mainteiner = await mainteinerService.findByRfid(decodedMessage.RFID);
+                if (!mainteiner) {
+                    mainteiner = await mainteinerService.create(null, decodedMessage.RFID, null);
                 }
-                // await historicService.create(esp.id, mainteiner.id, espRouter.id);
-            } else {
-                console.log('Não tem RFID');
+
+                await historicService.create(esp.id, mainteiner.id, espRouter.id, decodedMessage.RSSI);
             }
         } catch (error) {
             console.log(error);

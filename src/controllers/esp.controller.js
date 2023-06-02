@@ -23,7 +23,8 @@ module.exports = class EspController extends Controller {
         const { mac } = Controller.matchData(req);
 
         const espService = espServiceProvider();
-        const esp = await espService.create(mac);
+        const { _id } = await espService.create(mac);
+        const esp = await espService.findById(_id);
 
         res.json(esp);
     }

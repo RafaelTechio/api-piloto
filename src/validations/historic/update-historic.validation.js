@@ -1,3 +1,3 @@
 const validator = require('express-validator');
 
-module.exports = [validator.body([`espId`, `mantainerId`, `atStation`, 'routerId', 'wifiPotency'])];
+module.exports = [validator.body([`esp`, `mantainer`, `atStation`, 'router', 'wifiPotency'])];

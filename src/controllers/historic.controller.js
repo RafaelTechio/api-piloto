@@ -23,7 +23,8 @@ module.exports = class HistoricController extends Controller {
         const { espId, maintainerId, routerId, wifiPotency, atStation } = Controller.matchData(req);
 
         const historicService = historicServiceProvider();
-        const historic = await historicService.create(espId, maintainerId, routerId, wifiPotency, atStation);
+        const { _id } = await historicService.create(espId, maintainerId, routerId, wifiPotency, atStation);
+        const historic = historicService.findById(_id);
 
         res.json(historic);
     }

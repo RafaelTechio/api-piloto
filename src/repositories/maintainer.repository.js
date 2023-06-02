@@ -3,4 +3,4 @@ const MongoRepository = require('./mongo.repository');
 
 class MaintainerMongoRepository extends MongoRepository {}
 
-module.exports = new MaintainerMongoRepository(maintainerSchema, 'maintainer');
+module.exports = new MaintainerMongoRepository(maintainerSchema, 'Maintainer');

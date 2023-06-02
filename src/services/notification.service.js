@@ -1,44 +1,43 @@
-const InternalServerError = require("../errors/internal-server-error");
-const Service = require("./service");
+const InternalServerError = require('../errors/internal-server-error');
+const Service = require('./service');
 
-module.exports = class notificationService extends Service{
-    constructor(repository){
+module.exports = class notificationService extends Service {
+    constructor(repository) {
         super(repository);
     }
 
-    async create(espId,manteinerId,state,urgency,sector,content){
-        if(!espId) {
-            throw new InternalServerError("Notification must have a esp_id")
+    async create(espId, mantainerId, state, urgency, sectorId, content) {
+        if (!espId) {
+            throw new InternalServerError('Notification must have a esp_id');
         }
 
-        if(!manteinerId) {
-            throw new InternalServerError("Notification must have a manteinerId")
+        if (!mantainerId) {
+            throw new InternalServerError('Notification must have a mantainerId');
         }
 
-        if(!state) {
-            throw new InternalServerError("Notification must have a type")
+        if (!state) {
+            throw new InternalServerError('Notification must have a type');
         }
 
-        if(!urgency) {
-            throw new InternalServerError("Notification must have a urgency")
+        if (!urgency) {
+            throw new InternalServerError('Notification must have a urgency');
         }
 
-        if(!sector) {
-            throw new InternalServerError("Notification must have a sector")
+        if (!sectorId) {
+            throw new InternalServerError('Notification must have a sector');
         }
-        
-        if(!content) {
-            throw new InternalServerError("Notification must have a content")
+
+        if (!content) {
+            throw new InternalServerError('Notification must have a content');
         }
+
         return await this.repository.create({
-            espId,
-            manteinerId,
+            esp: espId,
+            maintainer: mantainerId,
             state,
             urgency,
-            sector,
+            sector: sectorId,
             content,
         });
     }
-
-
-}
+};

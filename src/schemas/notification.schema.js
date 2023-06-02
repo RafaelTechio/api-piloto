@@ -2,12 +2,27 @@ const mongoose = require('mongoose');
 
 const NotificationSchema = new mongoose.Schema(
     {
-        espId: String,
-        manteinerId: String,
+        esp: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Esp',
+            default: null,
+        },
+        manteiner: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Manteiner',
+            default: null,
+        },
         state: String,
         urgency: String,
-        sectorId: String,
-        content: String,
+        sector: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Sector',
+            default: null,
+        },
+        content: {
+            type: String,
+            required: true,
+        },
     },
     { timestamps: true, versionKey: false }
 );

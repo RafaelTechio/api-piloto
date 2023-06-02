@@ -24,7 +24,8 @@ module.exports = class EspRouterController extends Controller {
 
         const espRouterService = espRouterServiceProvider();
 
-        const espRouter = await espRouterService.create(sectorId, mac);
+        const { _id } = await espRouterService.create(sectorId, mac);
+        const espRouter = await espRouterService.findById(_id);
 
         res.json(espRouter);
     }

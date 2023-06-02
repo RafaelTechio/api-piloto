@@ -7,7 +7,7 @@ module.exports = class MaintainerService extends Service {
     }
 
     async create(name, rfid, sectorId) {
-        if (!name) {
+        if (name === undefined) {
             throw new InternalServerError('Maintainer must have a name');
         }
 
@@ -15,18 +15,20 @@ module.exports = class MaintainerService extends Service {
             throw new InternalServerError('Maintainer must have a rfid');
         }
 
-        if (!sectorId) {
+        if (sectorId === undefined) {
             throw new InternalServerError('Maintainer must have a sector');
         }
 
         return await this.repository.create({
             name,
             rfid,
-            sectorId,
+            sector: sectorId,
         });
+
+        return await this.findById(_id);
     }
 
     async findByRfid(rfid) {
-        return await this.repository.find({ rfid });
+        return await this.find({ rfid });
     }
 };

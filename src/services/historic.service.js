@@ -19,16 +19,13 @@ module.exports = class HistoricService extends Service {
         }
 
         const maintainer = await maintainerMongoRepository.findById(maintainerId);
-        const sectorMaintainer = await sectorMongoRepository.findById(maintainer.sectorId);
         const router = await espRouterMongoRepository.findById(routerId);
-        const sectorRouter = await sectorMongoRepository.findById(router.sectorId);
-
         return await this.repository.create({
-            espId,
-            sectorEspId: sectorRouter._id,
-            maintainerId,
-            sectorMaintainerId: sectorMaintainer._id,
-            routerId,
+            esp: espId,
+            espSector: router.sector ? router.sector._id : null,
+            maintainer: maintainer._id,
+            maintainerSector: maintainer.sector ? maintainer.sector._id : null,
+            router: router._id,
             wifiPotency,
             atStation,
         });
