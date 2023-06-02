@@ -1,4 +1,3 @@
-const { Mongoo } = require('mongoose');
 const ApiError = require('../errors/api.error');
 const InternalServerError = require('../errors/internal-server-error');
 const BadRequestError = require('../errors/bad-request.error');
