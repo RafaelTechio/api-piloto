@@ -21,6 +21,7 @@ module.exports = async function espListener(mqttConnection = new MqttConnection(
         try {
             const topicMac = topic.split('/').pop();
             const decodedMessage = MqttMessageHelper.decodeMessage(message);
+            console.log(decodedMessage);
 
             const esp = await espService.findByMac(topicMac);
 
@@ -31,7 +32,7 @@ module.exports = async function espListener(mqttConnection = new MqttConnection(
                     console.log('BSSID', decodedMessage.BSSID);
                     const espRouter = await espRouterService.findByMac(decodedMessage.BSSID);
                     if (espRouter) {
-                        await historicService.create(esp.id, mainteiner.id, espRouter.id);
+                        await historicService.create(esp.id, mainteiner.id, espRouter.id, decodedMessage.RSSI);
                     } else {
                         console.log('Não tem router');
                     }

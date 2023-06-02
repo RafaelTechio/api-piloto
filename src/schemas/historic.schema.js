@@ -19,7 +19,7 @@ const HistoricSchema = new mongoose.Schema(
             default: null,
         },
         routerId: String,
-        wifiPontency: {
+        wifiPotency: {
             type: Number,
             default: null,
         },
