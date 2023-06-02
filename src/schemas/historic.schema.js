@@ -6,11 +6,23 @@ const HistoricSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        sectorEspId: String,
-        maintainerId: String,
-        sectorMaintainerId: String,
+        sectorEspId: {
+            type: String,
+            default: null,
+        },
+        maintainerId: {
+            type: String,
+            default: null,
+        },
+        sectorMaintainerId: {
+            type: String,
+            default: null,
+        },
         routerId: String,
-        wifiPontency: Number,
+        wifiPontency: {
+            type: Number,
+            default: null,
+        },
         atStation: {
             type: Boolean,
             default: false,

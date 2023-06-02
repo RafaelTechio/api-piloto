@@ -17,4 +17,8 @@ module.exports = class EspRouterService extends Service {
 
         return this.repository.create({ sectorId, mac });
     }
+
+    async findByMac(mac) {
+        return await this.repository.find({ mac });
+    }
 };

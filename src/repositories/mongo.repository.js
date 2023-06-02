@@ -49,6 +49,22 @@ module.exports = class MongoRepository {
         }
     }
 
+    async find(filters, sort = null, select = null) {
+        const query = this.model.find(filters);
+
+        if (sort) {
+            query.sort(sort);
+        }
+
+        if (select) {
+            query.select(select);
+        }
+
+        const result = await query.exec();
+
+        return result[0] || null;
+    }
+
     async list(filters, sort = null, select = null, limit = null) {
         const query = this.model.find(filters);
 
