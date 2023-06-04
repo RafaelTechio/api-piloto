@@ -1,7 +1,7 @@
 require('express-async-errors');
 const { Router } = require('express');
 
-const MainteinerRouter = require('./mainteiner.router');
+const MainteinerRouter = require('./maintainer.router');
 const EspRouter = require('./esp.router');
 const EspRouterRouter = require('./esp-router.router');
 const SectorRouter = require('./sector.router');
