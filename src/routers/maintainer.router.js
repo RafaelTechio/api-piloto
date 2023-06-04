@@ -7,6 +7,7 @@ const router = Router();
 
 router.get('/', MainteinerController.list);
 router.get('/:id', MainteinerController.find);
+router.get('/:name/:value', MainteinerController.findByVar);
 router.post('/', ...createMainteinerValidation, MainteinerController.create);
 router.put('/:id', ...updateMainteinerValidation, MainteinerController.update);
 router.delete('/:id', MainteinerController.delete);

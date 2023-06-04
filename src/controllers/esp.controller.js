@@ -18,6 +18,16 @@ module.exports = class EspController extends Controller {
         res.json(esp);
     }
 
+    static async findByVar(req, res) {
+        const espService = espServiceProvider();
+
+        const filter = {};
+        filter[req.params.name] = req.params.value;
+        const esp = await espService.find(filter);
+
+        res.json(esp);
+    }
+
     static async create(req, res) {
         Controller.validationResult(req);
         const { mac } = Controller.matchData(req);

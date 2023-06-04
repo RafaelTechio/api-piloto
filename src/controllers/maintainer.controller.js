@@ -1,28 +1,38 @@
 const Controller = require('./controller');
-const mainteinerServiceProvider = require('../providers/maintainer.provider');
+const maintainerServiceProvider = require('../providers/maintainer.provider');
 
-module.exports = class MainteinerController extends Controller {
+module.exports = class maintainerController extends Controller {
     static async list(req, res) {
-        const mainteinerService = mainteinerServiceProvider();
+        const maintainerService = maintainerServiceProvider();
 
-        const mainteinerList = await mainteinerService.list();
+        const maintainerList = await maintainerService.list();
 
-        res.json(mainteinerList);
+        res.json(maintainerList);
     }
 
     static async find(req, res) {
-        const mainteinerService = mainteinerServiceProvider();
+        const maintainerService = maintainerServiceProvider();
 
-        const mainteiner = await mainteinerService.findById(req.params.id);
+        const maintainer = await maintainerService.findById(req.params.id);
 
-        res.json(mainteiner);
+        res.json(maintainer);
+    }
+
+    static async findByVar(req, res) {
+        const maintainerService = maintainerServiceProvider();
+
+        const filter = {};
+        filter[req.params.name] = req.params.value;
+        const maintainer = await maintainerService.find(filter);
+
+        res.json(maintainer);
     }
 
     static async create(req, res) {
         Controller.validationResult(req);
         const { name, rfid, sectorId } = Controller.matchData(req);
 
-        const maintainerService = mainteinerServiceProvider();
+        const maintainerService = maintainerServiceProvider();
 
         const { _id } = await maintainerService.create(name, rfid, sectorId);
         const maintainer = await maintainerService.findById(_id);
@@ -33,22 +43,22 @@ module.exports = class MainteinerController extends Controller {
     static async update(req, res) {
         const body = Controller.matchData(req);
 
-        const mainteinerService = mainteinerServiceProvider();
-        await mainteinerService.update({
+        const maintainerService = maintainerServiceProvider();
+        await maintainerService.update({
             ...body,
             _id: req.params.id,
         });
 
-        const mainteiner = await mainteinerService.findById(req.params.id);
+        const maintainer = await maintainerService.findById(req.params.id);
 
-        res.json(mainteiner);
+        res.json(maintainer);
     }
 
     static async delete(req, res) {
-        const mainteinerService = mainteinerServiceProvider();
+        const maintainerService = maintainerServiceProvider();
 
-        const mainteiner = await mainteinerService.delete(req.params.id);
+        const maintainer = await maintainerService.delete(req.params.id);
 
-        res.json(mainteiner);
+        res.json(maintainer);
     }
 };

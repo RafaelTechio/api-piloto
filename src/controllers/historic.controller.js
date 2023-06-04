@@ -18,6 +18,16 @@ module.exports = class HistoricController extends Controller {
         res.json(historic);
     }
 
+    static async findByVar(req, res) {
+        const historicService = historicServiceProvider();
+
+        const filter = {};
+        filter[req.params.name] = req.params.value;
+        const historic = await historicService.find(filter);
+
+        res.json(historic);
+    }
+
     static async create(req, res) {
         Controller.validationResult(req);
         const { espId, maintainerId, routerId, wifiPotency, atStation } = Controller.matchData(req);

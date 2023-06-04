@@ -18,6 +18,16 @@ module.exports = class EspRouterController extends Controller {
         res.json(espRouter);
     }
 
+    static async findByVar(req, res) {
+        const espRouterService = espRouterServiceProvider();
+
+        const filter = {};
+        filter[req.params.name] = req.params.value;
+        const espRouter = await espRouterService.find(filter);
+
+        res.json(espRouter);
+    }
+
     static async create(req, res) {
         Controller.validationResult(req);
         const { sectorId, mac } = Controller.matchData(req);

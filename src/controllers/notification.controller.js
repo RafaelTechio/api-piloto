@@ -18,6 +18,16 @@ module.exports = class NotificationController extends Controller {
         res.json(notification);
     }
 
+    static async findByVar(req, res) {
+        const notificationService = notificationServiceProvider();
+
+        const filter = {};
+        filter[req.params.name] = req.params.value;
+        const notification = await notificationService.find(filter);
+
+        res.json(notification);
+    }
+
     static async create(req, res) {
         Controller.validationResult(req);
         const { espId, manteinerId, state, urgency, sector, content } = Controller.matchData(req);
