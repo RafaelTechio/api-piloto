@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const InternalServerError = require('../errors/internal-server-error');
 const NotFoundError = require('../errors/not-found.error');
 
-module.exports = class MongoRepository {
+module.exports = class SMongoRepository {
     constructor(schema, collectionName) {
         this.schema = schema;
         this.collectionName = collectionName;
@@ -54,7 +54,7 @@ module.exports = class MongoRepository {
 
     async findById(id, populates = this.getSchemaRefs()) {
         if (!id) {
-            throw new InternalServerError(`${this.model.modelName} must have and Id to been found`);
+            throw new InternalServerError(`${this.getModelName()} must have and Id to been found`);
         }
 
         try {
