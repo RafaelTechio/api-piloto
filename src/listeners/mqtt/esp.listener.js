@@ -33,14 +33,17 @@ module.exports = async function espListener(mqttConnection = new MqttConnection(
                 espRouter = await espRouterService.create(null, decodedMessage.BSSID);
             }
 
+            let maintainerId = null;
             if (decodedMessage.RFID) {
                 let maintainer = await maintainerService.findByRfid(decodedMessage.RFID);
                 if (!maintainer) {
                     console.log(`Created empty maintainer`);
                     maintainer = await maintainerService.create(null, decodedMessage.RFID, null);
                 }
-                await historicService.create(esp.id, maintainer.id, espRouter.id, decodedMessage.RSSI);
+                maintainerId = maintainer.id;
             }
+
+            await historicService.create(esp.id, maintainerId, espRouter.id, decodedMessage.RSSI);
         } catch (error) {
             console.log(error);
         }
