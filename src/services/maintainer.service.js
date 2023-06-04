@@ -24,8 +24,6 @@ module.exports = class MaintainerService extends Service {
             rfid,
             sector: sectorId,
         });
-
-        return await this.findById(_id);
     }
 
     async findByRfid(rfid) {
