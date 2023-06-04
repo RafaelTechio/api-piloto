@@ -7,9 +7,8 @@ module.exports = class EspService extends Service {
     }
 
     async create(mac) {
-
         if (!mac) {
-            throw new InternalServerError("Esp must have a mac address")
+            throw new InternalServerError('Esp must have a mac address');
         }
 
         return await this.repository.create({
@@ -17,4 +16,11 @@ module.exports = class EspService extends Service {
         });
     }
 
+    async findById(id) {
+        return await this.findById(id);
+    }
+
+    async findByMac(mac) {
+        return await this.find({ mac });
+    }
 };

@@ -2,12 +2,35 @@ const mongoose = require('mongoose');
 
 const HistoricSchema = new mongoose.Schema(
     {
-        espId: {
-            type: String,
+        esp: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Esp',
             required: true,
         },
-        mantainerId: String,
-        sectorId: String,
+        espSector: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Sector',
+            default: null,
+        },
+        maintainer: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Maintainer',
+            default: null,
+        },
+        maintainerSector: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Sector',
+            default: null,
+        },
+        router: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'EspRouter',
+            default: null,
+        },
+        wifiPotency: {
+            type: Number,
+            default: null,
+        },
         atStation: {
             type: Boolean,
             default: false,

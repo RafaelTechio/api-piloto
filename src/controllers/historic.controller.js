@@ -5,7 +5,7 @@ module.exports = class HistoricController extends Controller {
     static async list(req, res) {
         const historicService = historicServiceProvider();
 
-        const historicList = await historicService.list();
+        const historicList = await historicService.list(req.query);
 
         res.json(historicList);
     }
@@ -18,12 +18,23 @@ module.exports = class HistoricController extends Controller {
         res.json(historic);
     }
 
+    static async findByVar(req, res) {
+        const historicService = historicServiceProvider();
+
+        const filter = {};
+        filter[req.params.name] = req.params.value;
+        const historic = await historicService.find(filter);
+
+        res.json(historic);
+    }
+
     static async create(req, res) {
         Controller.validationResult(req);
-        const { espId, mantainerId, sectorId, atStation } = Controller.matchData(req);
+        const { espId, maintainerId, routerId, wifiPotency, atStation } = Controller.matchData(req);
 
         const historicService = historicServiceProvider();
-        const historic = await historicService.create(espId, mantainerId, sectorId, atStation);
+        const { _id } = await historicService.create(espId, maintainerId, routerId, wifiPotency, atStation);
+        const historic = historicService.findById(_id);
 
         res.json(historic);
     }
