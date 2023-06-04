@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const InternalServerError = require('../errors/internal-server-error');
 const NotFoundError = require('../errors/not-found.error');
+const BadRequestError = require('../errors/bad-request.error');
 
 module.exports = class MongoRepository {
     constructor(schema, collectionName) {
@@ -63,8 +64,11 @@ module.exports = class MongoRepository {
         }
 
         try {
-            return await this.model.updateOne({ _id: data._id }, data);
+            return await this.model.updateOne({ _id: data._id }, data, { runValidators: true });
         } catch (err) {
+            if (err._message == 'Validation failed') {
+                throw new BadRequestError(`${this.getModelName()} error: ${Object.values(err.errors)[0].properties.message}`);
+            }
             throw new NotFoundError(`${this.getModelName()} not found`);
         }
     }

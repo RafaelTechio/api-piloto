@@ -6,37 +6,23 @@ module.exports = class notificationService extends Service {
         super(repository);
     }
 
-    async create(espId, mantainerId, state, urgency, sectorId, content) {
-        if (!espId) {
-            throw new InternalServerError('Notification must have a esp_id');
-        }
-
-        if (!mantainerId) {
-            throw new InternalServerError('Notification must have a mantainerId');
-        }
-
-        if (!state) {
-            throw new InternalServerError('Notification must have a type');
-        }
-
-        if (!urgency) {
-            throw new InternalServerError('Notification must have a urgency');
-        }
-
-        if (!sectorId) {
-            throw new InternalServerError('Notification must have a sector');
-        }
-
+    async create(content, category, espId, maintainerId, sectorId) {
         if (!content) {
             throw new InternalServerError('Notification must have a content');
         }
 
+        console.log({
+            esp: espId,
+            maintainer: maintainerId,
+            sector: sectorId,
+            category,
+            content,
+        });
         return await this.repository.create({
             esp: espId,
-            maintainer: mantainerId,
-            state,
-            urgency,
+            maintainer: maintainerId,
             sector: sectorId,
+            category,
             content,
         });
     }

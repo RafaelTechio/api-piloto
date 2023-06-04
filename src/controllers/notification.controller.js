@@ -30,10 +30,10 @@ module.exports = class NotificationController extends Controller {
 
     static async create(req, res) {
         Controller.validationResult(req);
-        const { espId, manteinerId, state, urgency, sector, content } = Controller.matchData(req);
+        const { esp, maintainer, category, sector, content } = Controller.matchData(req);
 
-        const notificationService = await notificationServiceProvider();
-        const { _id } = await notificationService.create(espId, manteinerId, state, urgency, sector, content);
+        const notificationService = notificationServiceProvider();
+        const { _id } = await notificationService.create(content, category, esp, maintainer, sector);
         const notification = await notificationService.findById(_id);
 
         res.json(notification);

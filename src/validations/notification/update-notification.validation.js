@@ -1,3 +1,3 @@
 const validator = require('express-validator');
 
-module.exports = [validator.body(['esp', 'state', 'urgency', 'content', 'manteiner', 'sector'])];
+module.exports = [validator.body(['content', 'category', 'esp', 'maintainer', 'sector', 'state'])];

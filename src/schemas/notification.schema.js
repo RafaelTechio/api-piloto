@@ -7,13 +7,23 @@ const NotificationSchema = new mongoose.Schema(
             ref: 'Esp',
             default: null,
         },
-        manteiner: {
+        maintainer: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Manteiner',
+            ref: 'Maintainer',
             default: null,
         },
-        state: String,
-        urgency: String,
+        category: {
+            type: String,
+            enum: ['info'],
+            default: 'info',
+            required: true,
+        },
+        state: {
+            type: String,
+            enum: ['checked', 'unchecked'],
+            default: 'unchecked',
+            required: true,
+        },
         sector: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Sector',
