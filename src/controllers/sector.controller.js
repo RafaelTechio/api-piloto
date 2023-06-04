@@ -5,7 +5,7 @@ module.exports = class SectorController extends Controller {
     static async list(req, res) {
         const sectorService = sectorServiceProvider();
 
-        const sectorList = await sectorService.list();
+        const sectorList = await sectorService.list(req.query);
 
         res.json(sectorList);
     }

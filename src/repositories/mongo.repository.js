@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const InternalServerError = require('../errors/internal-server-error');
 const NotFoundError = require('../errors/not-found.error');
 
-module.exports = class SMongoRepository {
+module.exports = class MongoRepository {
     constructor(schema, collectionName) {
         this.schema = schema;
         this.collectionName = collectionName;
@@ -22,6 +22,35 @@ module.exports = class SMongoRepository {
 
     getModelName() {
         return this.model.modelName;
+    }
+
+    normalizeFilters(filters) {
+        const normalizedFilters = {};
+        Object.entries(filters)
+            .filter((entrie) => {
+                return Object.keys(this.schema.paths).includes(entrie[0]);
+            })
+            .map((entrie) => {
+                const schemaAttribute = this.schema.paths[entrie[0]];
+                if (schemaAttribute.instance == 'ObjectId') {
+                    if (!mongoose.Types.ObjectId.isValid(entrie[1])) {
+                        throw new InternalServerError("Object isn't valid");
+                    }
+                    entrie[1] = entrie[1];
+                } else if (schemaAttribute.instance == 'Boolean') {
+                    entrie[1] = !!entrie[1];
+                } else if (schemaAttribute.instance == 'Number') {
+                    entrie[1] = entrie[1];
+                } else {
+                    entrie[1] = {
+                        $regex: new RegExp(entrie[1], 'i'),
+                    };
+                }
+                return entrie;
+            })
+            .forEach((entrie) => (normalizedFilters[entrie[0]] = entrie[1]));
+
+        return normalizedFilters;
     }
 
     async create(data) {
@@ -64,7 +93,13 @@ module.exports = class SMongoRepository {
         }
     }
 
-    async find(filters, populates = this.getSchemaRefs(), sort = null, select = null) {
+    async find(filters = {}, populates = this.getSchemaRefs(), sort = null, select = null) {
+        try {
+            filters = this.normalizeFilters(filters);
+        } catch (error) {
+            return [];
+        }
+
         const query = this.model.find(filters);
 
         if (sort) {
@@ -82,7 +117,13 @@ module.exports = class SMongoRepository {
         return (await query.exec())[0] || null;
     }
 
-    async list(filters, populates = this.getSchemaRefs(), sort = null, select = null, limit = null) {
+    async list(filters = {}, populates = this.getSchemaRefs(), sort = null, select = null, limit = null) {
+        try {
+            filters = this.normalizeFilters(filters);
+        } catch (error) {
+            return [];
+        }
+
         const query = this.model.find(filters);
 
         if (sort) {

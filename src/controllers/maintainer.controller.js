@@ -5,7 +5,7 @@ module.exports = class maintainerController extends Controller {
     static async list(req, res) {
         const maintainerService = maintainerServiceProvider();
 
-        const maintainerList = await maintainerService.list();
+        const maintainerList = await maintainerService.list(req.query);
 
         res.json(maintainerList);
     }

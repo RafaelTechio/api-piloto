@@ -5,7 +5,7 @@ module.exports = class EspController extends Controller {
     static async list(req, res) {
         const espService = espServiceProvider();
 
-        const espList = await espService.list();
+        const espList = await espService.list(req.query);
 
         res.json(espList);
     }

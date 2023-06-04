@@ -5,7 +5,7 @@ module.exports = class NotificationController extends Controller {
     static async list(req, res) {
         const notificationService = notificationServiceProvider();
 
-        const notificationList = await notificationService.list();
+        const notificationList = await notificationService.list(req.query);
 
         res.json(notificationList);
     }

@@ -5,7 +5,7 @@ module.exports = class HistoricController extends Controller {
     static async list(req, res) {
         const historicService = historicServiceProvider();
 
-        const historicList = await historicService.list();
+        const historicList = await historicService.list(req.query);
 
         res.json(historicList);
     }
