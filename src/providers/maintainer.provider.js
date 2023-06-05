@@ -1,6 +1,6 @@
 const maintainerMongoRepository = require('../repositories/maintainer.repository');
-const MainteinerService = require('../services/maintainer.service');
+const MaintainerService = require('../services/maintainer.service');
 
-module.exports = function mainteinerServiceProvider() {
-    return new MainteinerService(maintainerMongoRepository);
+module.exports = function maintainerServiceProvider() {
+    return new MaintainerService(maintainerMongoRepository);
 };
