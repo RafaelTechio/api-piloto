@@ -5,7 +5,7 @@ module.exports = class EspRouterController extends Controller {
     static async list(req, res) {
         const espRouterService = espRouterServiceProvider();
 
-        const espRouterList = await espRouterService.list(req.query);
+        const espRouterList = await espRouterService.list(req.query, req.query.orderBy);
 
         res.json(espRouterList);
     }
