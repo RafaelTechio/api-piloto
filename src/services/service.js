@@ -27,7 +27,7 @@ module.exports = class Service {
         return await this.repository.find(filters, populates);
     }
 
-    async list(filters, populates = this.getDefaultRelations(), orders, select, limit) {
+    async list(filters, orders, limit, populates = this.getDefaultRelations(), select) {
         return await this.repository.list(filters, populates, orders, select, limit);
     }
 };
