@@ -54,6 +54,33 @@ module.exports = class MongoRepository {
         return normalizedFilters;
     }
 
+    normalizeOrder(order) {
+        if (!order) {
+            return {
+                createdAt: -1,
+            };
+        }
+        const splitedOrder = String(order).toLowerCase().split('-');
+        let orderPath = splitedOrder[0];
+        const orderValue = splitedOrder[1] == 'asc' ? 1 : -1;
+
+        const path = Object.keys(this.schema.paths).find((key) => {
+            return String(key).toLowerCase() == orderPath;
+        });
+
+        let normalizedOrder = {};
+
+        if (path) {
+            normalizedOrder[path] = orderValue;
+        } else {
+            normalizedOrder['createdAt'] = -1;
+        }
+
+        console.log(normalizedOrder);
+
+        return normalizedOrder;
+    }
+
     async create(data) {
         return await this.model.create(data);
     }
@@ -107,6 +134,7 @@ module.exports = class MongoRepository {
         const query = this.model.find(filters);
 
         if (sort) {
+            sort = this.normalizeOrder(sort);
             query.sort(sort);
         }
 
@@ -131,6 +159,7 @@ module.exports = class MongoRepository {
         const query = this.model.find(filters);
 
         if (sort) {
+            sort = this.normalizeOrder(sort);
             query.sort(sort);
         }
 

@@ -30,11 +30,11 @@ module.exports = class maintainerController extends Controller {
 
     static async create(req, res) {
         Controller.validationResult(req);
-        const { name, rfid, sectorId } = Controller.matchData(req);
+        const { name, rfid, sector } = Controller.matchData(req);
 
         const maintainerService = maintainerServiceProvider();
 
-        const { _id } = await maintainerService.create(name, rfid, sectorId);
+        const { _id } = await maintainerService.create(name, rfid, sector);
         const maintainer = await maintainerService.findById(_id);
 
         res.json(maintainer);
