@@ -76,8 +76,6 @@ module.exports = class MongoRepository {
             normalizedOrder['createdAt'] = -1;
         }
 
-        console.log(normalizedOrder);
-
         return normalizedOrder;
     }
 
