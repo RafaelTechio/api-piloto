@@ -1,3 +1,4 @@
+const BadRequestError = require('../errors/bad-request.error');
 const InternalServerError = require('../errors/internal-server-error');
 const espRouterMongoRepository = require('../repositories/esp-router.repository');
 const maintainerMongoRepository = require('../repositories/maintainer.repository');
@@ -16,6 +17,11 @@ module.exports = class HistoricService extends Service {
         let maintainerSectorId = null;
         if (maintainerId) {
             const maintainer = await maintainerMongoRepository.findById(maintainerId);
+
+            if (!maintainer) {
+                throw new BadRequestError("Maintainer doen't exists");
+            }
+
             maintainerId = maintainer.id;
 
             if (maintainer.sector) {
@@ -25,6 +31,10 @@ module.exports = class HistoricService extends Service {
 
         let espSectorId = null;
         const router = await espRouterMongoRepository.findById(routerId);
+        if (!router) {
+            throw new BadRequestError("Router doesn't exists");
+        }
+
         if (router.sector) {
             espSectorId = router.sector.id;
         }
