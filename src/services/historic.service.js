@@ -14,6 +14,10 @@ module.exports = class HistoricService extends Service {
             throw new InternalServerError('Historic must have a espId');
         }
 
+        if (!routerId) {
+            throw new InternalServerError('Historic must have a routerId');
+        }
+
         let maintainerSectorId = null;
         if (maintainerId) {
             const maintainer = await maintainerMongoRepository.findById(maintainerId);

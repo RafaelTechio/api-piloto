@@ -30,10 +30,10 @@ module.exports = class EspController extends Controller {
 
     static async create(req, res) {
         Controller.validationResult(req);
-        const { mac } = Controller.matchData(req);
+        const { mac, tabletName, tabletModel } = Controller.matchData(req);
 
         const espService = espServiceProvider();
-        const { _id } = await espService.create(mac);
+        const { _id } = await espService.create(mac, tabletName, tabletModel);
         const esp = await espService.findById(_id);
 
         res.json(esp);

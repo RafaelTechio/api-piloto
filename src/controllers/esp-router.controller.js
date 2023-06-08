@@ -30,11 +30,11 @@ module.exports = class EspRouterController extends Controller {
 
     static async create(req, res) {
         Controller.validationResult(req);
-        const { sector, mac } = Controller.matchData(req);
+        const { sector, mac, name } = Controller.matchData(req);
 
         const espRouterService = espRouterServiceProvider();
 
-        const { _id } = await espRouterService.create(sector, mac);
+        const { _id } = await espRouterService.create(sector, mac, name);
         const espRouter = await espRouterService.findById(_id);
 
         res.json(espRouter);

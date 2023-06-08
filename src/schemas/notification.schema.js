@@ -12,9 +12,14 @@ const NotificationSchema = new mongoose.Schema(
             ref: 'Maintainer',
             default: null,
         },
+        router: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'EspRouter',
+            default: null,
+        },
         category: {
             type: String,
-            enum: ['info'],
+            enum: ['info', 'esp-connection', 'esp-sector', 'esp-maintainer', 'esp', 'router', 'maintainer'],
             default: 'info',
             required: true,
         },

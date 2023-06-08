@@ -7,6 +7,10 @@ const EspSchema = new mongoose.Schema(
             unique: true,
             required: true,
         },
+        tabletName: {
+            type: String,
+            default: null,
+        },
     },
     { timestamps: true, versionKey: false }
 );
