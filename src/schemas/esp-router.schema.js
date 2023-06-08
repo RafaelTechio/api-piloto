@@ -12,6 +12,10 @@ const EspRouterSchema = new mongoose.Schema(
             unique: true,
             required: true,
         },
+        name: {
+            type: String,
+            default: null,
+        },
     },
     { timestamps: true, versionKey: false }
 );

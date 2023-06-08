@@ -27,6 +27,10 @@ module.exports = class Service {
         return await this.repository.find(filters, populates);
     }
 
+    async findLast(filters, populates = this.getDefaultRelations()) {
+        return await this.repository.find(filters, populates, 'createdAt-desc');
+    }
+
     async list(filters, orders, limit, populates = this.getDefaultRelations(), select) {
         return await this.repository.list(filters, populates, orders, select, limit);
     }
