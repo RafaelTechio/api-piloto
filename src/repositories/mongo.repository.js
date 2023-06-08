@@ -25,7 +25,7 @@ module.exports = class MongoRepository {
         return this.model.modelName;
     }
 
-    normalizeFilters(filters) {
+    normalizeFiltersBySchemaFields(filters) {
         const normalizedFilters = {};
         Object.entries(filters)
             .filter((entrie) => {
@@ -42,14 +42,79 @@ module.exports = class MongoRepository {
                     entrie[1] = !!entrie[1];
                 } else if (schemaAttribute.instance == 'Number') {
                     entrie[1] = entrie[1];
-                } else {
+                } else if (schemaAttribute.instance == 'String') {
                     entrie[1] = {
                         $regex: new RegExp(entrie[1], 'i'),
                     };
+                } else if (schemaAttribute.instance == 'Date') {
+                    entrie[1] = new Date(entrie[1]);
                 }
+
                 return entrie;
             })
             .forEach((entrie) => (normalizedFilters[entrie[0]] = entrie[1]));
+
+        return normalizedFilters;
+    }
+
+    searchByAllPaths(search, pathTypeToIgnore = ['Boolean']) {
+        const normalizedFilters = {};
+        const isValidObjectId = mongoose.Types.ObjectId.isValid(search);
+        const isValidNumber = !isNaN(search);
+        const isValidDate = !isNaN(Date.parse(search));
+
+        if (!isValidObjectId && !pathTypeToIgnore.includes('ObjectId')) {
+            pathTypeToIgnore.push('ObjectId');
+        }
+
+        if (!isValidNumber && !pathTypeToIgnore.includes('Number')) {
+            pathTypeToIgnore.push('Number');
+        }
+
+        if (!isValidDate && !pathTypeToIgnore.includes('Date')) {
+            pathTypeToIgnore.push('Date');
+        }
+
+        let paths = Object.values(this.schema.paths);
+        paths = paths.filter((path) => !pathTypeToIgnore.includes(path.instance));
+
+        paths.forEach((path) => {
+            normalizedFilters[path.path] = search;
+        });
+
+        return normalizedFilters;
+    }
+
+    getOrFilter(filters) {
+        filters = this.normalizeFiltersBySchemaFields(filters);
+
+        const normalizedOrFilter = { $or: [] };
+
+        Object.entries(filters).forEach((entrie) => {
+            const objectFilter = {};
+            objectFilter[entrie[0]] = entrie[1];
+            normalizedOrFilter.$or.push(objectFilter);
+        });
+
+        return normalizedOrFilter;
+    }
+
+    getAndFilter(filters) {
+        filters = this.normalizeFiltersBySchemaFields(filters);
+        return filters;
+    }
+
+    normalizeFilters(filters) {
+        let normalizedFilters = {};
+        if (filters.filter) {
+            const allPathsFilter = this.searchByAllPaths(filters.filter);
+            normalizedFilters = this.getOrFilter(allPathsFilter);
+        }
+
+        normalizedFilters = {
+            ...normalizedFilters,
+            ...this.getAndFilter(filters),
+        };
 
         return normalizedFilters;
     }
@@ -93,6 +158,8 @@ module.exports = class MongoRepository {
         } catch (err) {
             if (err._message == 'Validation failed') {
                 throw new BadRequestError(`${this.getModelName()} error: ${Object.values(err.errors)[0].properties.message}`);
+            } else if (err.code === 11000) {
+                throw new BadRequestError(`${this.getModelName()} error: ${Object.keys(err.keyValue).join(',')} duplicated`);
             }
             throw new NotFoundError(`${this.getModelName()} not found`);
         }

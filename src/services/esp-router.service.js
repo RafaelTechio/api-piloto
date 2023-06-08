@@ -6,16 +6,12 @@ module.exports = class EspRouterService extends Service {
         super(repository);
     }
 
-    async create(sectorId, mac) {
-        if (sectorId === undefined) {
-            throw InternalServerError('EspRouter must have a sectorId');
-        }
-
+    async create(sectorId, mac, name) {
         if (!mac) {
-            throw InternalServerError('EspRouter must have a mac');
+            throw new InternalServerError('EspRouter must have a mac');
         }
 
-        return await this.repository.create({ sector: sectorId, mac });
+        return await this.repository.create({ sector: sectorId, mac, name });
     }
 
     async findById(id) {
