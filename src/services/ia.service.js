@@ -22,7 +22,7 @@ module.exports = class IaService {
             });
 
             return {
-                sector: historic.espSector.name,
+                sector: historic.espSector.id,
                 connections,
             };
         });
