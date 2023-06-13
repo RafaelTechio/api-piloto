@@ -26,6 +26,13 @@ module.exports = class notificationService extends Service {
             return await this.create(`Localizador de MAC ${esp.mac} deixou de ter o colaborador de RFID ${lastMaintainer.rfid} como responsável`, 'esp-maintainer', esp.id);
         } else if (!lastMaintainer && maintainer) {
             return await this.create(`Localizador de MAC ${esp.mac} passou a ter o colaborador de RFID ${maintainer.rfid} como responsável`, 'esp-maintainer', esp.id, maintainer.id);
+        } else if (lastMaintainer && maintainer && lastMaintainer.id != maintainer.id) {
+            return await this.create(
+                `Localizador de MAC ${esp.mac} deixou de ter o colaborador de RFID ${lastMaintainer.rfid} e passou a ter o colaborador de RFID ${maintainer.rfid} como responsável`,
+                'esp-maintainer',
+                esp.id,
+                maintainer.id
+            );
         }
     }
 
