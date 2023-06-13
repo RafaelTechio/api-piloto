@@ -1,3 +1,4 @@
+const IaConnection = require('../connections/ia.connection');
 const MongoConnection = require('../connections/mongo.connection');
 const MqttConnection = require('../connections/mqtt.connection');
 const listener = require('../listeners/mqtt/listener');
@@ -21,5 +22,11 @@ module.exports = async function startGlobalConnections() {
         }
 
         globalConnections.mongoConnection = mongoConnection;
+    }
+
+    if (environmentVars.IA_API_BASE_URL) {
+        const iaConnection = new IaConnection(environmentVars.IA_API_BASE_URL);
+
+        globalConnections.iaConnection = iaConnection;
     }
 };
