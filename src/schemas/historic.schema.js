@@ -27,11 +27,33 @@ const HistoricSchema = new mongoose.Schema(
             ref: 'EspRouter',
             default: null,
         },
+        connections: [
+            {
+                _id: false,
+                router: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'EspRouter',
+                    default: null,
+                },
+                wifiPotency: {
+                    type: Number,
+                    default: null,
+                },
+            },
+        ],
         wifiPotency: {
             type: Number,
             default: null,
         },
+        online: {
+            type: Boolean,
+            default: true,
+        },
         atStation: {
+            type: Boolean,
+            default: false,
+        },
+        verified: {
             type: Boolean,
             default: false,
         },

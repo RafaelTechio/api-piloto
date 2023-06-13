@@ -9,7 +9,7 @@ module.exports = class HistoricService extends Service {
         super(repository);
     }
 
-    async create(espId, maintainerId, routerId, wifiPotency = null, atStation = false) {
+    async create(espId, maintainerId, routerId, wifiPotency = null, connections = [], online = true, atStation = false, verified = false) {
         if (!espId) {
             throw new InternalServerError('Historic must have a espId');
         }
@@ -43,6 +43,8 @@ module.exports = class HistoricService extends Service {
             espSectorId = router.sector.id;
         }
 
+        connections = connections || [];
+
         return await this.repository.create({
             esp: espId,
             espSector: espSectorId,
@@ -51,6 +53,9 @@ module.exports = class HistoricService extends Service {
             router: routerId,
             wifiPotency,
             atStation,
+            online,
+            verified,
+            connections,
         });
     }
 };

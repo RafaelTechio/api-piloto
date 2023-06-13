@@ -12,11 +12,18 @@ module.exports = class MongoRepository {
 
     getSchemaRefs() {
         const refs = [];
-        this.model.schema.eachPath((path, schemaType) => {
-            if (schemaType.instance === 'ObjectId' && schemaType.options.ref) {
-                refs.push(path);
-            }
-        });
+
+        const getRefs = (schema = this.model.schema, schemaPath = '') => {
+            schema.eachPath((path, schemaType) => {
+                if (schemaType.instance === 'ObjectId' && schemaType.options.ref) {
+                    refs.push(schemaPath ? `${schemaPath}.${path}` : path);
+                } else if (schemaType.instance === 'Array' || schemaType.instance === 'Embedded') {
+                    getRefs(schemaType.schema, path);
+                }
+            });
+        };
+
+        getRefs();
 
         return refs;
     }
