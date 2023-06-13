@@ -30,10 +30,10 @@ module.exports = class SectorController extends Controller {
 
     static async create(req, res) {
         Controller.validationResult(req);
-        const { name } = Controller.matchData(req);
+        const { name, mapX, mapY } = Controller.matchData(req);
 
         const sectorService = await sectorServiceProvider();
-        const { _id } = await sectorService.create(name);
+        const { _id } = await sectorService.create(name, mapX, mapY);
         const sector = await sectorService.findById(_id);
 
         res.json(sector);
