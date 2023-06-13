@@ -6,6 +6,14 @@ const SectorSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        mapX: {
+            type: Number,
+            default: null,
+        },
+        mapY: {
+            type: Number,
+            default: null,
+        },
     },
     { timestamps: true, versionKey: false }
 );
