@@ -23,8 +23,8 @@ module.exports = class Service {
         return await this.repository.findById(id, populates);
     }
 
-    async find(filters, populates = this.getDefaultRelations()) {
-        return await this.repository.find(filters, populates);
+    async find(filters, orders, populates = this.getDefaultRelations()) {
+        return await this.repository.find(filters, populates, orders);
     }
 
     async findLast(filters, populates = this.getDefaultRelations()) {

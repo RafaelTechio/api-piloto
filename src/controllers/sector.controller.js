@@ -5,7 +5,7 @@ module.exports = class SectorController extends Controller {
     static async list(req, res) {
         const sectorService = sectorServiceProvider();
 
-        const sectorList = await sectorService.list(req.query, req.query.orderBy);
+        const sectorList = await sectorService.list(req.query, req.query.orderBy || 'createdAt-desc', req.query.limit);
 
         res.json(sectorList);
     }
@@ -23,7 +23,7 @@ module.exports = class SectorController extends Controller {
 
         const filter = {};
         filter[req.params.name] = req.params.value;
-        const sector = await sectorService.find(filter);
+        const sector = await sectorService.find(filter, req.query.orderBy || 'createdAt-desc');
 
         res.json(sector);
     }
