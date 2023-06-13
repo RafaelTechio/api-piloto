@@ -5,7 +5,7 @@ module.exports = class EspController extends Controller {
     static async list(req, res) {
         const espService = espServiceProvider();
 
-        const espList = await espService.list(req.query, req.query.orderBy);
+        const espList = await espService.list(req.query, req.query.orderBy || 'createdAt-desc', req.query.limit);
 
         res.json(espList);
     }
@@ -23,7 +23,7 @@ module.exports = class EspController extends Controller {
 
         const filter = {};
         filter[req.params.name] = req.params.value;
-        const esp = await espService.find(filter);
+        const esp = await espService.find(filter, req.query.orderBy || 'createdAt-desc');
 
         res.json(esp);
     }

@@ -5,7 +5,7 @@ module.exports = class maintainerController extends Controller {
     static async list(req, res) {
         const maintainerService = maintainerServiceProvider();
 
-        const maintainerList = await maintainerService.list(req.query, req.query.orderBy);
+        const maintainerList = await maintainerService.list(req.query, req.query.orderBy || 'createdAt-desc', req.query.limit);
 
         res.json(maintainerList);
     }
@@ -23,7 +23,7 @@ module.exports = class maintainerController extends Controller {
 
         const filter = {};
         filter[req.params.name] = req.params.value;
-        const maintainer = await maintainerService.find(filter);
+        const maintainer = await maintainerService.find(filter, req.query.orderBy || 'createdAt-desc');
 
         res.json(maintainer);
     }

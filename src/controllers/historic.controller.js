@@ -5,7 +5,7 @@ module.exports = class HistoricController extends Controller {
     static async list(req, res) {
         const historicService = historicServiceProvider();
 
-        const historicList = await historicService.list(req.query, req.query.orderBy);
+        const historicList = await historicService.list(req.query, req.query.orderBy || 'createdAt-desc', req.query.limit);
 
         res.json(historicList);
     }
@@ -23,7 +23,7 @@ module.exports = class HistoricController extends Controller {
 
         const filter = {};
         filter[req.params.name] = req.params.value;
-        const historic = await historicService.find(filter);
+        const historic = await historicService.find(filter, req.query.orderBy || 'createdAt-desc');
 
         res.json(historic);
     }
