@@ -1,5 +1,6 @@
 const IaConnection = require('../connections/ia.connection');
 const historicProvider = require('../providers/historic.provider');
+const { AxiosError } = require('axios');
 
 module.exports = class IaService {
     constructor(connection = new IaConnection()) {
@@ -27,7 +28,13 @@ module.exports = class IaService {
             };
         });
 
-        this.connection.postTrain(normalizedHistorics);
+        try {
+            return await this.connection.postTrain(normalizedHistorics);
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                console.log(error.response.data);
+            }
+        }
     }
 
     async predict(historics = []) {
@@ -47,6 +54,12 @@ module.exports = class IaService {
             return connections;
         });
 
-        return this.connection.postPredict(normalizedHistorics);
+        try {
+            return await this.connection.postPredict(normalizedHistorics);
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                console.log(error.response.data);
+            }
+        }
     }
 };

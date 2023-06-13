@@ -9,8 +9,6 @@ const iaServiceProvider = require('../../providers/ia.provider');
 const DateHelper = require('../../helpers/date.helper');
 const environmentVars = require('../../config/environment.config');
 
-let lastIaTrain = null;
-
 module.exports = async function espListener(mqttConnection = new MqttConnection()) {
     mqttConnection.listenConnect(() => {
         mqttConnection.subscribe(`/#`);
@@ -137,19 +135,22 @@ async function normalHistoric(topic, message) {
     if (iaService.connection.baseUrl) {
         (async () => {
             try {
+                if (!environmentVars.lastIaTrainDate || (environmentVars.lastIaTrainDate && DateHelper.hasAtLeastTimeAgo(environmentVars.lastIaTrainDate, environmentVars.IA_TRAIN_DELAY_SECONDS))) {
+                    console.log(`going to train IA`);
+                    environmentVars.lastIaTrainDate = new Date();
+                    await iaService.trainIa();
+                }
+
                 const createdHistoric = await historicService.findById(_id);
                 if (createdHistoric.connections.length >= 2) {
                     const sectors = await iaService.predict([createdHistoric]);
 
-                    await historicService.update({
-                        _id,
-                        iaEspSector: sectors[0],
-                    });
-
-                    if (!environmentVars.lastIaTrain || DateHelper.hasAtLeastTimeAgo(environmentVars.lastIaTrainDate, environmentVars.IA_TRAIN_DELAY_SECONDS)) {
-                        console.log(`going to train IA`);
-                        environmentVars.lastIaTrain = new Date();
-                        await iaService.trainIa();
+                    if (sectors && Array.isArray(sectors) && sectors[0]) {
+                        console.log('IA suggest:', sectors[0]);
+                        await historicService.update({
+                            _id,
+                            iaEspSector: sectors[0],
+                        });
                     }
                 }
             } catch (error) {

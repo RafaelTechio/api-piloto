@@ -13,6 +13,12 @@ module.exports = async function startGlobalConnections() {
         globalConnections.mongoConnection = mongoConnection;
     }
 
+    if (environmentVars.IA_API_BASE_URL) {
+        const iaConnection = new IaConnection(environmentVars.IA_API_BASE_URL);
+
+        globalConnections.iaConnection = iaConnection;
+    }
+
     if (environmentVars.MQTT_BROKER_URL) {
         const mongoConnection = new MqttConnection(environmentVars.MQTT_BROKER_URL, environmentVars.MQTT_BROKER_IP, environmentVars.MQTT_BROKER_BASE_TOPIC);
         mongoConnection.connect();
@@ -22,11 +28,5 @@ module.exports = async function startGlobalConnections() {
         }
 
         globalConnections.mongoConnection = mongoConnection;
-    }
-
-    if (environmentVars.IA_API_BASE_URL) {
-        const iaConnection = new IaConnection(environmentVars.IA_API_BASE_URL);
-
-        globalConnections.iaConnection = iaConnection;
     }
 };

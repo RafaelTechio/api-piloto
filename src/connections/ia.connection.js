@@ -9,18 +9,22 @@ module.exports = class IaConnection {
     }
 
     async postTrain(data) {
-        return await this.axios.request({
+        const result = await this.axios.request({
             url: '/train',
             method: 'post',
             data,
         });
+
+        return result.data;
     }
 
     async postPredict(data) {
-        return await this.axios.request({
-            url: '/test',
+        const result = await this.axios.request({
+            url: '/predict',
             method: 'post',
             data,
         });
+
+        return result.data;
     }
 };

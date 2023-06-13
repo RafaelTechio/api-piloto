@@ -11,6 +11,10 @@ module.exports = class MqttMessageHelper {
         const buffer = this.stringBufferToBuffer(string);
         const jsonStringfied = this.bufferToString(buffer);
 
-        return JSON.parse(jsonStringfied);
+        const result = JSON.parse(jsonStringfied);
+
+        result.connections = (result.connections || []).filter((connection) => connection.BSSID);
+
+        return result;
     }
 };
