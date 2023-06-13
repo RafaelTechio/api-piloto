@@ -12,6 +12,11 @@ const HistoricSchema = new mongoose.Schema(
             ref: 'Sector',
             default: null,
         },
+        iaEspSector: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Sector',
+            default: null,
+        },
         maintainer: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Maintainer',

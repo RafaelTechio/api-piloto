@@ -5,6 +5,11 @@ const maintainerServiceProvider = require('../../providers/maintainer.provider')
 const espRouterServiceProvider = require('../../providers/esp-router.provider');
 const historicServiceProvider = require('../../providers/historic.provider');
 const notificationServiceProvider = require('../../providers/notification.provider');
+const iaServiceProvider = require('../../providers/ia.provider');
+const DateHelper = require('../../helpers/date.helper');
+const environmentVars = require('../../config/environment.config');
+
+let lastIaTrain = null;
 
 module.exports = async function espListener(mqttConnection = new MqttConnection()) {
     mqttConnection.listenConnect(() => {
@@ -51,7 +56,18 @@ async function lastWillHistoric(topic, message) {
         const maintainerId = lastHistoric.maintainer ? lastHistoric.maintainer.id : lastHistoric.maintainer;
         const routerId = lastHistoric.router ? lastHistoric.router.id : lastHistoric.router;
 
-        await historicService.create(esp.id, maintainerId, routerId, lastHistoric.wifiPotency, false, lastHistoric.atStation);
+        await historicService.create(
+            esp.id,
+            maintainerId,
+            routerId,
+            lastHistoric.wifiPotency,
+            lastHistoric.connections,
+            false,
+            lastHistoric.atStation,
+            lastHistoric.verified,
+            lastHistoric.iaEspSector
+        );
+
         await notificationService.create(`Localizador de tablet de MAC: ${esp.mac} foi desconectado`, 'esp', esp.id);
     }
 }
@@ -62,6 +78,7 @@ async function normalHistoric(topic, message) {
     const espRouterService = espRouterServiceProvider();
     const historicService = historicServiceProvider();
     const notificationService = notificationServiceProvider();
+    const iaService = iaServiceProvider();
 
     const topicMac = topic.split('/').pop();
     const decodedMessage = MqttMessageHelper.decodeMessage(message);
@@ -115,5 +132,29 @@ async function normalHistoric(topic, message) {
         })
     );
 
-    await historicService.create(esp.id, maintainerId, espRouter.id, decodedMessage.RSSI, connections);
+    const { _id } = await historicService.create(esp.id, maintainerId, espRouter.id, decodedMessage.RSSI, connections);
+
+    if (iaService.connection.baseUrl) {
+        (async () => {
+            try {
+                const createdHistoric = await historicService.findById(_id);
+                if (createdHistoric.connections.length >= 2) {
+                    const sectors = await iaService.predict([createdHistoric]);
+
+                    await historicService.update({
+                        _id,
+                        iaEspSector: sectors[0],
+                    });
+
+                    if (!environmentVars.lastIaTrain || DateHelper.hasAtLeastTimeAgo(environmentVars.lastIaTrainDate, environmentVars.IA_TRAIN_DELAY_SECONDS)) {
+                        console.log(`going to train IA`);
+                        environmentVars.lastIaTrain = new Date();
+                        await iaService.trainIa();
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        })();
+    }
 }
