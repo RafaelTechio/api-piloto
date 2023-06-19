@@ -132,6 +132,27 @@ async function normalHistoric(topic, message) {
 
     const { _id } = await historicService.create(esp.id, maintainerId, espRouter.id, decodedMessage.RSSI, connections);
 
+    if (maintainerId) {
+        maintainerService.update({
+            _id: maintainerId,
+            lastHistoric: _id,
+        });
+    }
+
+    if (espRouter.id) {
+        espRouterService.update({
+            _id: espRouter.id,
+            lastHistoric: _id,
+        });
+    }
+
+    if (esp.id) {
+        espService.update({
+            _id: esp.id,
+            lastHistoric: _id,
+        });
+    }
+
     if (iaService.connection.baseUrl) {
         (async () => {
             try {
