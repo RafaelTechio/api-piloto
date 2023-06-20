@@ -49,6 +49,11 @@ module.exports = class MongoRepository {
 
     validateFieldAndValueSchema(path, value) {
         const schemaAttribute = this.schema.paths[path];
+
+        if (!schemaAttribute) {
+            return value;
+        }
+
         if (schemaAttribute.instance == 'ObjectId') {
             if (!mongoose.Types.ObjectId.isValid(value)) {
                 throw new InternalServerError("Object isn't valid");
@@ -59,9 +64,13 @@ module.exports = class MongoRepository {
         } else if (schemaAttribute.instance == 'Number') {
             value = value;
         } else if (schemaAttribute.instance == 'String') {
-            value = {
-                $regex: new RegExp(value, 'i'),
-            };
+            if (schemaAttribute.enumValues && Array.isArray(schemaAttribute.enumValues) && schemaAttribute.enumValues.length) {
+                value = value;
+            } else {
+                value = {
+                    $regex: new RegExp(value, 'i'),
+                };
+            }
         } else if (schemaAttribute.instance == 'Date') {
             value = new Date(value);
         }
@@ -73,7 +82,7 @@ module.exports = class MongoRepository {
         const normalizedFilters = {};
         Object.entries(filters)
             .filter((entrie) => {
-                return Object.keys(this.schema.paths).includes(entrie[0]);
+                return Object.keys(this.schema.paths).includes(String(entrie[0]).split('.')[0]);
             })
             .map((entrie) => {
                 if (Array.isArray(entrie[1])) {
