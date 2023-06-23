@@ -198,7 +198,7 @@ async function normalHistoric(topic, message) {
                     }
                 }
             } catch (error) {
-                // console.log(error);
+                console.log(error);
             }
         })();
     }
